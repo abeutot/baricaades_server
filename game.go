@@ -955,7 +955,7 @@ func (g *Game) RollDice(user string) error {
 		(g.state == STATE_YELLOW_PLAYING && g.players[2] == user) ||
 		(g.state == STATE_BLUE_PLAYING && g.players[3] == user) {
 		rand.Seed(time.Now().UnixNano())
-		g.dice = uint8(rand.Intn(5) + 1)
+		g.dice = uint8(rand.Intn(6) + 1)
 
 		g.Notify()
 
