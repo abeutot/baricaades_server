@@ -1055,12 +1055,24 @@ func (g *Game) Move(player, from, to, baricade string) error {
 	switch g.state {
 	case STATE_RED_PLAYING:
 		playerPawn = PAWN_RED
+		if g.players[0] == g.players[2] {
+			playerPawn |= PAWN_YELLOW
+		}
 	case STATE_GREEN_PLAYING:
 		playerPawn = PAWN_GREEN
+		if g.players[1] == g.players[3] {
+			playerPawn |= PAWN_BLUE
+		}
 	case STATE_YELLOW_PLAYING:
 		playerPawn = PAWN_YELLOW
+		if g.players[0] == g.players[2] {
+			playerPawn |= PAWN_RED
+		}
 	case STATE_BLUE_PLAYING:
 		playerPawn = PAWN_BLUE
+		if g.players[1] == g.players[3] {
+			playerPawn |= PAWN_GREEN
+		}
 	}
 	if playerPawn == ^uint8(0) {
 		return errors.New("invalid action in current game state")
@@ -1099,10 +1111,10 @@ func (g *Game) Move(player, from, to, baricade string) error {
 	if fromPawn == -1 {
 		return errors.New("start position is empty")
 	}
-	if (playerPawn == PAWN_RED && fromPawn > 4) ||
-		(playerPawn == PAWN_GREEN && (fromPawn < 5 || fromPawn > 9)) ||
-		(playerPawn == PAWN_YELLOW && (fromPawn < 10 || fromPawn > 14)) ||
-		(playerPawn == PAWN_BLUE && (fromPawn < 15 || fromPawn > 19)) {
+	if (fromPawn < 5 && (playerPawn&PAWN_RED) == 0) ||
+		(fromPawn > 4 && fromPawn < 10 && (playerPawn&PAWN_GREEN) == 0) ||
+		(fromPawn > 9 && fromPawn < 15 && (playerPawn&PAWN_YELLOW) == 0) ||
+		(fromPawn > 14 && fromPawn < 20 && (playerPawn&PAWN_BLUE) == 0) {
 		return errors.New("start position is not your own")
 	}
 	/* check to is allowed destination */
