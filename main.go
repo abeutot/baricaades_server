@@ -370,6 +370,28 @@ func gameUpdates(c *gin.Context) {
 		return
 	}
 
+	isPartOfGame := false
+	for i := range game.players {
+		if game.players[i] == authData.Username {
+			isPartOfGame = true
+			break
+		}
+	}
+
+	if !isPartOfGame {
+		err = ws.WriteJSON(struct {
+			Code  int    `json:"code"`
+			Error string `json:"error"`
+		}{
+			Code:  http.StatusForbidden,
+			Error: "you are not part of this game",
+		})
+		if err != nil {
+			panic("error: " + err.Error())
+		}
+		return
+	}
+
 	/* setup a channel on the game */
 	updates := game.Subscribe()
 	defer game.Unsubscribe(updates)
