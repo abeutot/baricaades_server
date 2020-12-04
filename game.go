@@ -775,6 +775,7 @@ var transitions = func() [130][130]bool {
 	ret[POSITION_H13][POSITION_I13] = true
 	ret[POSITION_I13][POSITION_H13] = true
 	ret[POSITION_I13][POSITION_J13] = true
+	ret[POSITION_I13][POSITION_I12] = true
 	ret[POSITION_J13][POSITION_I13] = true
 	ret[POSITION_J13][POSITION_K13] = true
 	ret[POSITION_K13][POSITION_J13] = true
