@@ -1,0 +1,12 @@
+Run in dev::
+
+    go run .
+
+
+Generate binary::
+
+    go build
+
+    or
+
+    CGO_ENABLED=0 go build
