@@ -285,7 +285,11 @@ func getGame(c *gin.Context) {
 func gameUpdates(c *gin.Context) {
 	ws, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
-		panic("error: " + err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code":  http.StatusBadRequest,
+			"error": "cannot upgrade connection",
+		})
+		return
 	}
 	defer ws.Close()
 
