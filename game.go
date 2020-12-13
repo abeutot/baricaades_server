@@ -908,6 +908,10 @@ func InitGame(creator string) *Game {
 }
 
 func (g *Game) Join(name string) error {
+	if g.state != STATE_WAITING_FOR_PLAYERS {
+		return errors.New("game has already started")
+	}
+
 	/* check player not already joined */
 	for i := range g.players {
 		if g.players[i] == name {

@@ -38,6 +38,9 @@ func TestGame(t *testing.T) {
 	err = g.Start("bob")
 	assert.Equal(t, nil, err)
 
+	err = g.Join("player")
+	assert.Equal(t, "game has already started", err.Error())
+
 	err = g.RollDice("alice")
 	assert.Equal(t, "not your turn to roll", err.Error())
 
