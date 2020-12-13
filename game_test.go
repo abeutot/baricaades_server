@@ -24,8 +24,6 @@ func TestGame(t *testing.T) {
 	err = g.Join("alice")
 	assert.Equal(t, "you are already part of the game", err.Error())
 
-	/* TODO cannot 5 players join */
-
 	err = g.RollDice("bob")
 	assert.Equal(t, "game has not started yet", err.Error())
 
@@ -92,8 +90,6 @@ func TestGame(t *testing.T) {
 	assert.NotEqual(t, nil, err)
 	assert.Equal(t, "not allowed baricade destination", err.Error())
 
-	/* TODO check cannot join more than 4 players */
-
 	/* check path m5 -> i4 with dice 5 is valid */
 	g.state = STATE_BLUE_PLAYING
 	g.dice = 5
@@ -111,4 +107,16 @@ func TestGame(t *testing.T) {
 	/* TODO check if a move is possible, add option to pass if no path
 	* available? */
 	/* TODO two player mode, can select any color */
+}
+
+func TestGameCannotJoinMoreThan4(t *testing.T) {
+	g := InitGame("bob")
+	err := g.Join("alice")
+	assert.Equal(t, nil, err)
+	err = g.Join("player3")
+	assert.Equal(t, nil, err)
+	err = g.Join("player4")
+	assert.Equal(t, nil, err)
+	err = g.Join("player5")
+	assert.Equal(t, "game is full", err.Error())
 }
