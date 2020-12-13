@@ -1183,7 +1183,7 @@ func (g *Game) Move(player, from, to, baricade string) error {
 	} else {
 		g.state -= STATE_RED_PLAYING
 		g.state += uint8(1)
-		g.state %= uint8(4)
+		g.state %= uint8(len(g.players))
 		g.state += STATE_RED_PLAYING
 	}
 
