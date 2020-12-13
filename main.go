@@ -96,7 +96,7 @@ func userRegister(c *gin.Context) {
 	c.Bind(&b)
 
 	if _, alreadyExists := users[b.Username]; alreadyExists {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"code":  http.StatusBadRequest,
 			"error": "username already exists",
 		})
