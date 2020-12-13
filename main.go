@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/base64"
 	"errors"
 	"log"
 	"math/rand"
@@ -43,36 +42,14 @@ func AuthMiddleware() gin.HandlerFunc {
 			panic("users not in context")
 		}
 
-		header := c.Request.Header.Get("Authorization")
+		/* we protect every path except for register and game updates */
+		matched, err := regexp.MatchString(`^(/user/register)|(/game/[^/]*/updates)$`, c.Request.URL.Path)
+		if err != nil {
+			panic(err)
+		}
+		if !matched {
+			username, password, found := c.Request.BasicAuth()
 
-		if header != "" {
-			if !strings.HasPrefix(header, "Basic ") {
-				c.AbortWithStatusJSON(400, gin.H{
-					"code":  http.StatusBadRequest,
-					"error": "invalid auth header",
-				})
-				return
-			}
-
-			b64Credentials := strings.Split(header, " ")[1]
-			decodedCredentials, err := base64.StdEncoding.DecodeString(b64Credentials)
-			if err != nil {
-				c.AbortWithStatusJSON(400, gin.H{
-					"code":  http.StatusBadRequest,
-					"error": "invalid auth header",
-				})
-				return
-			}
-			credentials := strings.Split(string(decodedCredentials), ":")
-			if len(credentials) != 2 {
-				c.AbortWithStatusJSON(400, gin.H{
-					"code":  http.StatusBadRequest,
-					"error": "invalid auth header",
-				})
-				return
-			}
-
-			token, found := users[credentials[0]]
 			if !found {
 				c.AbortWithStatusJSON(401, gin.H{
 					"code":  http.StatusUnauthorized,
@@ -80,28 +57,24 @@ func AuthMiddleware() gin.HandlerFunc {
 				})
 				return
 			}
-			if token != credentials[1] {
+
+			token, found := users[username]
+			if !found {
 				c.AbortWithStatusJSON(401, gin.H{
 					"code":  http.StatusUnauthorized,
-					"error": "invalid token",
+					"error": "invalid credentials",
+				})
+				return
+			}
+			if token != password {
+				c.AbortWithStatusJSON(401, gin.H{
+					"code":  http.StatusUnauthorized,
+					"error": "invalid credentials",
 				})
 				return
 			}
 
-			c.Set("auth_user", credentials[0])
-		} else {
-			/* we protect every path except for register and game updates */
-			matched, err := regexp.MatchString(`^(/user/register)|(/game/[^/]*/updates)$`, c.Request.URL.Path)
-			if err != nil {
-				panic(err)
-			}
-			if !matched {
-				c.AbortWithStatusJSON(403, gin.H{
-					"code":  http.StatusForbidden,
-					"error": "auth required",
-				})
-				return
-			}
+			c.Set("auth_user", username)
 		}
 
 		c.Next()
