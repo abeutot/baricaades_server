@@ -90,6 +90,7 @@ func TestGame(t *testing.T) {
 	assert.NotEqual(t, nil, err)
 	assert.Equal(t, "not allowed baricade destination", err.Error())
 
+	/* two player mode, can select any color */
 	/* check path m5 -> i4 with dice 5 is valid */
 	g.state = STATE_BLUE_PLAYING
 	g.dice = 5
@@ -106,7 +107,6 @@ func TestGame(t *testing.T) {
 
 	/* TODO check if a move is possible, add option to pass if no path
 	* available? */
-	/* TODO two player mode, can select any color */
 }
 
 func TestGameCannotJoinMoreThan4(t *testing.T) {
