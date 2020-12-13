@@ -118,6 +118,11 @@ func userRegister(c *gin.Context) {
 	})
 }
 
+// GET /user/check
+func userCheck(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "msg": "success"})
+}
+
 func utilGetGamesNUser(c *gin.Context) (map[string]*Game, string) {
 	games, found := c.MustGet("games").(map[string]*Game)
 	if !found {
@@ -400,6 +405,7 @@ func main() {
 	r.Use(AuthMiddleware())
 
 	r.POST("/user/register", userRegister)
+	r.GET("/user/check", userCheck)
 
 	r.POST("/game", createGame)
 	r.POST("/game/:id/start", gameStart)
