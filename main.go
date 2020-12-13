@@ -201,16 +201,18 @@ func gameStart(c *gin.Context) {
 func gameJoin(c *gin.Context) {
 	game, user, err := utilGetGameNUser(c)
 	if err != nil {
-		return /* TODO */
+		return
 	}
 
-	/* TODO error handling */
-	game.Join(user)
+	err = game.Join(user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "error": err.Error()})
+		return
+	}
 
 	c.JSON(http.StatusCreated, gin.H{}) /* TODO body? */
 }
 
-// POST /game/<id>/start
 // POST /game/<id>/roll_dice
 func gameRollDice(c *gin.Context) {
 	game, user, err := utilGetGameNUser(c)
@@ -218,7 +220,6 @@ func gameRollDice(c *gin.Context) {
 		return
 	}
 
-	/* TODO permission check for who can roll */
 	err = game.RollDice(user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "error": err.Error()})
@@ -250,13 +251,8 @@ func gameMove(c *gin.Context) {
 		return
 	}
 
-	/* TODO check if game is finished */
-
 	c.JSON(http.StatusCreated, gin.H{}) /* TODO body? */
 }
-
-// GET /game/<id>/subscribe
-/* TODO websocket? */
 
 // GET /game/<id>
 func getGame(c *gin.Context) {
@@ -265,7 +261,7 @@ func getGame(c *gin.Context) {
 		return
 	}
 
-	/* TODO limit only to subscribed players */
+	/* limit only to subscribed players */
 	userInGame := false
 	for _, u := range game.players {
 		if u == user {
@@ -282,6 +278,7 @@ func getGame(c *gin.Context) {
 	c.JSON(http.StatusOK, game.JSON())
 }
 
+// GET /game/<id>/updates
 func gameUpdates(c *gin.Context) {
 	ws, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
@@ -303,7 +300,7 @@ func gameUpdates(c *gin.Context) {
 		panic("error: " + err.Error())
 	}
 
-	/* TODO check auth */
+	/* check auth */
 	users, found := c.MustGet("users").(map[string]string)
 	if !found {
 		panic("users not in context")
