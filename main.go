@@ -137,13 +137,13 @@ func utilGetGameNUser(c *gin.Context) (*Game, string, error) {
 	var gameParams GameParams
 
 	if err := c.ShouldBindUri(&gameParams); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "error": "Invalid ID"})
+		c.JSON(http.StatusNotFound, gin.H{"code": http.StatusNotFound, "error": "Invalid ID"})
 		return nil, "", errors.New("invalid ID")
 	}
 
 	game, found := games[gameParams.ID]
 	if !found {
-		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "error": "Invalid ID"})
+		c.JSON(http.StatusNotFound, gin.H{"code": http.StatusNotFound, "error": "Invalid ID"})
 		return nil, "", errors.New("invalid ID")
 	}
 
@@ -186,7 +186,7 @@ type GameParams struct {
 func gameStart(c *gin.Context) {
 	game, user, err := utilGetGameNUser(c)
 	if err != nil {
-		return /* TODO */
+		return
 	}
 
 	if err := game.Start(user); err != nil {
