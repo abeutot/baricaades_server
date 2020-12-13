@@ -908,7 +908,12 @@ func InitGame(creator string) *Game {
 }
 
 func (g *Game) Join(name string) error {
-	/* TODO check player not alreayd joined */
+	/* check player not already joined */
+	for i := range g.players {
+		if g.players[i] == name {
+			return errors.New("you are already part of the game")
+		}
+	}
 
 	if len(g.players) == 4 {
 		return errors.New("game is full")

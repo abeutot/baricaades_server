@@ -15,11 +15,15 @@ func TestGame(t *testing.T) {
 	err := g.Start("bob")
 	assert.Equal(t, "not enough players to start", err.Error())
 
-	g.Join("alice")
+	err = g.Join("alice")
+	assert.Equal(t, nil, err)
 
 	assert.Equal(t, 2, len(g.players))
 
-	/* TODO check cannot join twice */
+	/* check cannot join twice */
+	err = g.Join("alice")
+	assert.Equal(t, "you are already part of the game", err.Error())
+
 	/* TODO cannot 5 players join */
 
 	err = g.RollDice("bob")
