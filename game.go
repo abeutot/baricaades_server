@@ -1056,22 +1056,22 @@ func (g *Game) Move(player, from, to, baricade string) error {
 	switch g.state {
 	case STATE_RED_PLAYING:
 		playerPawn = PAWN_RED
-		if g.players[0] == g.players[2] {
+		if len(g.players) == 4 && g.players[0] == g.players[2] {
 			playerPawn |= PAWN_YELLOW
 		}
 	case STATE_GREEN_PLAYING:
 		playerPawn = PAWN_GREEN
-		if g.players[1] == g.players[3] {
+		if len(g.players) == 4 && g.players[1] == g.players[3] {
 			playerPawn |= PAWN_BLUE
 		}
 	case STATE_YELLOW_PLAYING:
 		playerPawn = PAWN_YELLOW
-		if g.players[0] == g.players[2] {
+		if len(g.players) == 4 && g.players[0] == g.players[2] {
 			playerPawn |= PAWN_RED
 		}
 	case STATE_BLUE_PLAYING:
 		playerPawn = PAWN_BLUE
-		if g.players[1] == g.players[3] {
+		if len(g.players) == 4 && g.players[1] == g.players[3] {
 			playerPawn |= PAWN_GREEN
 		}
 	}
