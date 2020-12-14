@@ -1154,6 +1154,7 @@ func (g *Game) Move(player, from, to, baricade string) error {
 	i := 0
 	for _, p := range allPaths {
 		if len(p) != int(g.dice)+1 {
+			/* assertion */
 			panic("invalid path length")
 		}
 		if p[len(p)-1] == toPosition {
