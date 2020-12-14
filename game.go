@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -1103,9 +1102,6 @@ func (g *Game) Move(player, from, to, baricade string) error {
 	/* baricade is not always required, only when to contains a baricade */
 	baricadePosition, _ := positionToIndex[baricade]
 
-	fmt.Println("from, to, baricade:", from, to, baricade)
-	fmt.Println("pop, pop, pop:", fromPosition, toPosition, baricadePosition)
-
 	fromPawn, toPawn, baricadePawn := -1, -1, -1
 	for i := range g.positions {
 		switch g.positions[i] {
@@ -1146,7 +1142,6 @@ func (g *Game) Move(player, from, to, baricade string) error {
 	}
 	/* generate all possible paths */
 	allPaths := findAllPaths(fromPosition, g.dice)
-	fmt.Println("allPaths:", allPaths)
 	/* keep only paths with to as final element */
 	baricadePositions := make(map[uint8]bool)
 	for i := 20; i < 31; i++ {

@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"log"
 	"math/rand"
 	"net/http"
 	"regexp"
@@ -377,7 +376,6 @@ func gameUpdates(c *gin.Context) {
 
 	/* get updates from game channel */
 	for u := range updates {
-		log.Println("will update")
 		err = ws.WriteJSON(u)
 		if err != nil {
 			panic("error: " + err.Error())
