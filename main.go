@@ -317,7 +317,7 @@ func gameUpdates(c *gin.Context) {
 			Code  int    `json:"code"`
 			Error string `json:"error"`
 		}{
-			Code:  http.StatusForbidden,
+			Code:  http.StatusUnauthorized,
 			Error: "invalid auth credentials",
 		})
 		if err != nil {
