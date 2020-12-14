@@ -51,7 +51,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			username, password, found := c.Request.BasicAuth()
 
 			if !found {
-				c.AbortWithStatusJSON(401, gin.H{
+				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 					"code":  http.StatusUnauthorized,
 					"error": "invalid auth header",
 				})
@@ -60,14 +60,14 @@ func AuthMiddleware() gin.HandlerFunc {
 
 			token, found := users[username]
 			if !found {
-				c.AbortWithStatusJSON(401, gin.H{
+				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 					"code":  http.StatusUnauthorized,
 					"error": "invalid credentials",
 				})
 				return
 			}
 			if token != password {
-				c.AbortWithStatusJSON(401, gin.H{
+				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 					"code":  http.StatusUnauthorized,
 					"error": "invalid credentials",
 				})
