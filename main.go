@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"net/http"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 
@@ -154,6 +155,52 @@ func utilGetGameNUser(c *gin.Context) (*Game, string, error) {
 	return game, user, nil
 }
 
+// GET /game
+func listGames(c *gin.Context) {
+	games, user := utilGetGamesNUser(c)
+
+	sortedGames := make([]*Game, 0, len(games))
+	mine := make([]*GameMiniJson, 0, 0)
+	open := make([]*GameMiniJson, 0, 0)
+
+	for id := range games {
+		sortedGames = append(sortedGames, games[id])
+	}
+
+	/* sort by creation date DESC */
+	sort.Slice(sortedGames, func(i, j int) bool {
+		return sortedGames[i].created.After(sortedGames[j].created)
+	})
+
+	for _, g := range sortedGames {
+		userInGame := false
+		for _, p := range g.players {
+			if p == user {
+				userInGame = true
+				break
+			}
+		}
+		if userInGame {
+			mine = append(mine, g.MiniJSON())
+			continue
+		}
+
+		if g.state != STATE_WAITING_FOR_PLAYERS || len(g.players) == 4 {
+			continue
+		}
+
+		open = append(open, g.MiniJSON())
+	}
+
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"mine": mine,
+			"open": open,
+		},
+	)
+}
+
 // POST /game
 func createGame(c *gin.Context) {
 	/* TODO check that a user can create only one game */
@@ -175,7 +222,8 @@ func createGame(c *gin.Context) {
 		}
 	}
 
-	games[string(gameID)] = InitGame(user)
+	ID := string(gameID)
+	games[ID] = InitGame(ID, user)
 
 	c.JSON(201, gin.H{
 		"id": string(gameID),
@@ -405,6 +453,7 @@ func main() {
 	r.POST("/user/register", userRegister)
 	r.GET("/user/check", userCheck)
 
+	r.GET("/game", listGames)
 	r.POST("/game", createGame)
 	r.POST("/game/:id/start", gameStart)
 	r.POST("/game/:id/join", gameJoin)

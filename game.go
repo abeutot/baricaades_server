@@ -15,6 +15,8 @@ import (
 
 /* TODO concurrency */
 type Game struct {
+	ID        string
+	created   time.Time
 	players   []string
 	state     uint8
 	dice      uint8
@@ -897,8 +899,10 @@ var initialPositions = [31]uint8{
 	POSITION_I15, // idx: 30
 }
 
-func InitGame(creator string) *Game {
+func InitGame(ID string, creator string) *Game {
 	return &Game{
+		ID:        ID,
+		created:   time.Now(),
 		players:   []string{creator},
 		state:     STATE_WAITING_FOR_PLAYERS,
 		dice:      0,
@@ -1199,6 +1203,20 @@ func (g *Game) Move(player, from, to, baricade string) error {
 
 	/* TODO return full path */
 	return nil
+}
+
+type GameMiniJson struct {
+	ID           string `json:"id"`
+	PlayersCount int    `json:"players_count"`
+	State        string `json:"state"`
+}
+
+func (g *Game) MiniJSON() *GameMiniJson {
+	return &GameMiniJson{
+		ID:           g.ID,
+		PlayersCount: len(g.players),
+		State:        indexStates[g.state],
+	}
 }
 
 type GameJson struct {

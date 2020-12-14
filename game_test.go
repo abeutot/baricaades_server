@@ -7,7 +7,7 @@ import (
 )
 
 func TestGame(t *testing.T) {
-	g := InitGame("bob")
+	g := InitGame("test", "bob")
 
 	assert.Equal(t, 1, len(g.players))
 	assert.Equal(t, STATE_WAITING_FOR_PLAYERS, g.state)
@@ -110,7 +110,7 @@ func TestGame(t *testing.T) {
 }
 
 func TestGameCannotJoinMoreThan4(t *testing.T) {
-	g := InitGame("bob")
+	g := InitGame("test", "bob")
 	err := g.Join("alice")
 	assert.Equal(t, nil, err)
 	err = g.Join("player3")
