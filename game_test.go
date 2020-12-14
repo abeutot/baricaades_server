@@ -69,7 +69,7 @@ func TestGame(t *testing.T) {
 	g.dice = 3
 	g.state = STATE_RED_PLAYING
 	err = g.Move("bob", "A3", "B5", "")
-	assert.Equal(t, "no available path between source and destination (check baricades)", err.Error())
+	assert.Equal(t, "no available path between source and destination (check baricades or dice)", err.Error())
 
 	err = g.Move("bob", "A3", "D3", "")
 	assert.Equal(t, nil, err)

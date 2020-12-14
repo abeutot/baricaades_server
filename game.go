@@ -1176,7 +1176,7 @@ func (g *Game) Move(player, from, to, baricade string) error {
 	allPaths = allPaths[:i]
 	/* check we still have paths in the result set */
 	if len(allPaths) == 0 {
-		return errors.New("no available path between source and destination (check baricades)")
+		return errors.New("no available path between source and destination (check baricades or dice)")
 	}
 	/* do the move */
 	g.positions[fromPawn] = toPosition
