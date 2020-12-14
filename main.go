@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"log"
 	"math/rand"
 	"net/http"
 	"regexp"
@@ -349,7 +350,8 @@ func gameUpdates(c *gin.Context) {
 	}
 	err = ws.ReadJSON(&authData)
 	if err != nil {
-		panic("error: " + err.Error())
+		log.Println("client error:", err.Error())
+		return
 	}
 
 	/* check auth */
@@ -368,7 +370,7 @@ func gameUpdates(c *gin.Context) {
 			Error: "invalid auth credentials",
 		})
 		if err != nil {
-			panic("error: " + err.Error())
+			log.Println("client error:", err.Error())
 		}
 		return
 	}
@@ -391,7 +393,7 @@ func gameUpdates(c *gin.Context) {
 			Error: "game not found",
 		})
 		if err != nil {
-			panic("error: " + err.Error())
+			log.Println("client error:", err.Error())
 		}
 		return
 	}
@@ -413,7 +415,7 @@ func gameUpdates(c *gin.Context) {
 			Error: "you are not part of this game",
 		})
 		if err != nil {
-			panic("error: " + err.Error())
+			log.Println("client error:", err.Error())
 		}
 		return
 	}
@@ -426,7 +428,8 @@ func gameUpdates(c *gin.Context) {
 	for u := range updates {
 		err = ws.WriteJSON(u)
 		if err != nil {
-			panic("error: " + err.Error())
+			log.Println("client error:", err.Error())
+			break
 		}
 	}
 }
